@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+/vendor
+/libs
+/.idea
+*.DS_Store
