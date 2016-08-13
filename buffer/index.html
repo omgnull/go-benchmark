@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <title>Go-benchmark by omgnull</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/github-light.css">
+  <meta name="viewport" content="width=device-width">
+  <title>Golang buffer benchmark</title>
+  <style type="text/css">
+    body, html {
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <header>
+    <h1>Bench <a href="https://golang.org/pkg/bytes/#Buffer">Buffer</a></h1>
+    <p>Golang buffer fun</p>
+    <p class="view">
+      <a href="https://github.com/omgnull/go-benchmark">
+        View the Project on GitHub
+        <small>omgnull/go-benchmark</small>
+      </a>
+    </p>
+    <ul>
+      <li><a href="https://github.com/omgnull/go-benchmark/zipball/master">Download <strong>ZIP File</strong></a></li>
+      <li><a href="https://github.com/omgnull/go-benchmark/tarball/master">Download <strong>TAR Ball</strong></a></li>
+      <li><a href="https://github.com/omgnull/go-benchmark">View On <strong>GitHub</strong></a></li>
+    </ul>
+  </header>
+  <section class="right">
+    <h2>Goal</h2>
+    <p>Determine memory management using buffer</p>
+    <ul>
+      <li><a href="#generic">Generic</a> (<a href="">source</a>)</li>
+      <li><a href="#stack">Stack</a> (<a href="">source</a>)</li>
+      <li><a href="#alloc">Alloc</a> (<a href="">source</a>)</li>
+      <li><a href="#sync">Sync</a> (<a href="">source</a>)</li>
+      <li><a href="#bpool">BPool</a> (<a href="">source</a>)</li>
+    </ul>
+  </section>
+  <section class="clr">
+    <h2>Overall</h2>
+    <pre>
+BenchmarkGenericBuf-8        1000000    1741 ns/op     2624 B/op    4 allocs/op
+BenchmarkGenericStackBuf-8   1000000    1695 ns/op     2624 B/op    4 allocs/op
+BenchmarkAllocBuf-8          1000000    1770 ns/op     2624 B/op    4 allocs/op
+BenchmarkSyncPoolBuf-8      50000000      43.5 ns/op      0 B/op    0 allocs/op
+BenchmarkBpoolPoolBuf-8     10000000     177 ns/op        0 B/op    0 allocs/op
+    </pre>
+    <p>0 B/op and 0 allocs/op is averaged values, in that case number of allocs are equal to number of goroutines</p>
+  </section>
+
+  <section>
+    <h3>Generic</h3>
+    <a name="generic"></a>
+    <canvas id="generic" width="300" height="200"></canvas>
+  </section>
+
+  <section>
+    <h3>Stack</h3>
+    <a name="stack"></a>
+    <canvas id="stack" width="300" height="200"></canvas>
+  </section>
+
+  <section>
+    <h3>Alloc</h3>
+    <a name="alloc"></a>
+    <canvas id="alloc" width="300" height="200"></canvas>
+  </section>
+
+  <section>
+    <h3>Sync</h3>
+    <a name="sync"></a>
+    <canvas id="sync" width="300" height="200"></canvas>
+  </section>
+
+  <section>
+    <h3>BPool</h3>
+    <a name="bpool"></a>
+    <canvas id="bpool" width="300" height="200"></canvas>
+  </section>
+
+  <footer>
+    <p>This project is maintained by <a href="https://github.com/omgnull">omgnull</a></p>
+    <p>
+      <small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small>
+    </p>
+  </footer>
+
+  <script src="../assets/js/scale.fix.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.0.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.1/Chart.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.min.js"></script>
+  <script type="text/javascript">
+    var suffix = ".csv",
+        hiddenLines = [
+          "TotalAlloc",
+          "Mallocs",
+          "Frees"
+        ],
+        data = [
+          "generic",
+          "stack",
+          "alloc",
+          "sync",
+          "bpool"
+        ];
+
+    $(document).ready(function () {
+      'use strict';
+      for (var i = 0; i < data.length; ++i) {
+        load(data[i]);
+      }
+    });
+
+    function load(context) {
+      'use strict';
+      var url = document.location.pathname + 'data/' + context + suffix;
+      Papa.parse(url, {
+        download: true,
+        complete: function (results) {
+          var data = results.data,
+              headers = data[0],
+              ctx = document.getElementById(context),
+              col = [],
+              labels = [],
+              datasets = [],
+              color = null;
+
+          if (data.length == 0) {
+            alert('Failed to load ' + url);
+          }
+
+          for (var i = 1; i < headers.length; ++i) {
+            color = tinycolor.fromRatio({h: i / headers.length, s: 0.8, l: 0.5});
+            datasets.push({
+              label: headers[i],
+              fill: false,
+              backgroundColor: color.toRgbString(),
+              borderColor: color.setAlpha(0.3).toRgbString(),
+              lineTension: 0.1,
+              data: []
+            });
+          }
+
+          for (i = 1; i < data.length; ++i) {
+            col = data[i];
+            labels.push(col[0]);
+
+            for (var it = 1; it < col.length; ++it) {
+              datasets[it - 1].data.push(col[it]);
+            }
+          }
+
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: datasets,
+              options: {
+                scales: {
+                  left: 100,
+                  height: 200
+                }
+              }
+            }
+          });
+        }
+      });
+    }
+  </script>
+</div>
+</body>
+</html>
