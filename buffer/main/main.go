@@ -10,13 +10,14 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"syscall"
 	"time"
 
 	"github.com/oxtoacart/bpool"
-	"strconv"
+	"github.com/valyala/bytebufferpool"
 )
 
 type (
@@ -63,6 +64,7 @@ var (
 		"alloc":   AllocBuf,
 		"sync":    SyncBuf,
 		"bpool":   BpoolBuf,
+		"bbpool":  BBpoolBuf,
 	}
 
 	// Strings written to buf
@@ -170,6 +172,12 @@ func WorkWithBuf(b *bytes.Buffer) {
 	}
 }
 
+func WorkWithByteBuf(b *bytebufferpool.ByteBuffer) {
+	for _, s := range str {
+		b.WriteString(s)
+	}
+}
+
 func GenericStackBuf() {
 	var buf bytes.Buffer
 	buf.Reset()
@@ -205,6 +213,13 @@ func BpoolBuf() {
 	buf := bPool.Get()
 	WorkWithBuf(buf)
 	bPool.Put(buf)
+	Done()
+}
+
+func BBpoolBuf() {
+	buf := bytebufferpool.Get()
+	WorkWithByteBuf(buf)
+	bytebufferpool.Put(buf)
 	Done()
 }
 

@@ -43,3 +43,11 @@ func BenchmarkBpoolPoolBuf(b *testing.B) {
 		}
 	})
 }
+
+func BenchmarkByteBufferPoolBuf(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			BBpoolBuf()
+		}
+	})
+}
