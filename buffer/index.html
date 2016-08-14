@@ -36,53 +36,89 @@
     <p>Determine memory management while using buffer</p>
     <p><a href="../">Go back</a></p>
     <ul>
-      <li><a href="#generic">Generic</a> (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L182">source</a>)</li>
-      <li><a href="#stack">Stack</a> (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L173">source</a>)</li>
-      <li><a href="#alloc">Alloc</a> (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L189">source</a>)</li>
-      <li><a href="#sync">Sync</a> (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L196">source</a>)</li>
-      <li><a href="#bpool">BPool</a> (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L204">source</a>)</li>
+      <li>
+        <a href="#generic">Generic</a>
+        (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L190">source</a>)
+      </li>
+      <li>
+        <a href="#stack">Stack</a>
+        (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L181">source</a>)
+      </li>
+      <li>
+        <a href="#alloc">Alloc</a>
+        (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L197">source</a>)
+      </li>
+      <li>
+        <a href="#sync">Sync</a>
+        (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L204">source</a>)
+      </li>
+      <li>
+        <a href="#bpool">BPool</a>
+        (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L212">source</a>)
+        (<a href="https://github.com/oxtoacart/bpool">lib</a>)
+      </li>
+      <li>
+        <a href="#bpool">ByteBufferPool</a>
+        (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L219">source</a>)
+        (<a href="https://github.com/valyala/bytebufferpool">lib</a>)
+      </li>
     </ul>
   </section>
   <section class="clr">
     <h2>Overall</h2>
     <pre>
-BenchmarkGenericBuf-8        1000000    1741 ns/op     2624 B/op    4 allocs/op
-BenchmarkGenericStackBuf-8   1000000    1695 ns/op     2624 B/op    4 allocs/op
-BenchmarkAllocBuf-8          1000000    1770 ns/op     2624 B/op    4 allocs/op
-BenchmarkSyncPoolBuf-8      50000000      43.5 ns/op      0 B/op    0 allocs/op
-BenchmarkBpoolPoolBuf-8     10000000     177 ns/op        0 B/op    0 allocs/op
+BenchmarkGenericBuf-8          1000000    1741 ns/op     2624 B/op    4 allocs/op
+BenchmarkGenericStackBuf-8     1000000    1695 ns/op     2624 B/op    4 allocs/op
+BenchmarkAllocBuf-8            1000000    1770 ns/op     2624 B/op    4 allocs/op
+BenchmarkSyncPoolBuf-8        50000000      43.5 ns/op      0 B/op    0 allocs/op
+BenchmarkBpoolPoolBuf-8       10000000     177 ns/op        0 B/op    0 allocs/op
+BenchmarkByteBufferPoolBuf-8  50000000      39.0 ns/op      0 B/op    0 allocs/op
     </pre>
     <p>0 B/op and 0 allocs/op are averaged values, in that case number of allocs is equal to number of goroutines; more than zero</p>
   </section>
 
   <section>
     <a name="generic"></a>
-    <h3>Generic (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L182">source</a>)</h3>
+    <h3>Generic (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L190">source</a>)</h3>
     <canvas id="generic" width="300" height="200"></canvas>
   </section>
 
   <section>
     <a name="stack"></a>
-    <h3>Stack (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L173">source</a>)</h3>
+    <h3>Stack (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L181">source</a>)</h3>
     <canvas id="stack" width="300" height="200"></canvas>
   </section>
 
   <section>
     <a name="alloc"></a>
-    <h3>Alloc (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L189">source</a>)</h3>
+    <h3>Alloc (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L197">source</a>)</h3>
     <canvas id="alloc" width="300" height="200"></canvas>
   </section>
 
   <section>
     <a name="sync"></a>
-    <h3>Sync (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L196">source</a>)</h3>
+    <h3>Sync (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L204">source</a>)</h3>
     <canvas id="sync" width="300" height="200"></canvas>
   </section>
 
   <section>
     <a name="bpool"></a>
-    <h3>BPool (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L204">source</a>)</h3>
+    <h3>
+      BPool
+      (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L212">source</a>)
+      (<a href="https://github.com/oxtoacart/bpool">lib</a>)
+    </h3>
     <canvas id="bpool" width="300" height="200"></canvas>
+  </section>
+
+  <section>
+    <a name="bbpool"></a>
+    <h3>
+      ByteBufferPool
+      (<a href="https://github.com/omgnull/go-benchmark/blob/master/buffer/main/main.go#L219">source</a>)
+      (<a href="https://github.com/valyala/bytebufferpool">lib</a>)
+    </h3>
+    <canvas id="bbpool" width="300" height="200"></canvas>
   </section>
 
   <footer>
@@ -110,7 +146,8 @@ BenchmarkBpoolPoolBuf-8     10000000     177 ns/op        0 B/op    0 allocs/op
           "stack",
           "alloc",
           "sync",
-          "bpool"
+          "bpool",
+          "bbpool"
         ];
 
     $(document).ready(function () {
