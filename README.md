@@ -8,6 +8,7 @@
 * [sync](https://golang.org/pkg/sync/)
 * [bpool](https://github.com/oxtoacart/bpool)
 * [bytebufferpool](https://github.com/valyala/bytebufferpool)
+* [easyjson](https://github.com/mailru/easyjson/blob/master/buffer/pool.go)
 
 
 #### Launch bench
