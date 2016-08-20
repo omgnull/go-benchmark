@@ -51,3 +51,11 @@ func BenchmarkByteBufferPoolBuf(b *testing.B) {
 		}
 	})
 }
+
+func BenchmarkEasyJsonBuffer(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			BBpoolBuf()
+		}
+	})
+}
