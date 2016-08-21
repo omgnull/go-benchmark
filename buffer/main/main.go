@@ -181,7 +181,7 @@ func WorkWithByteBuf(b *bytebufferpool.ByteBuffer) {
 	}
 }
 
-func WorkWithEJBuf(b *buffer.Buffer) {
+func WorkWithEJBuf(b *buffer.EJBuffer) {
 	for _, s := range str {
 		b.WriteString(s)
 	}
@@ -233,8 +233,8 @@ func BBpoolBuf() {
 }
 
 func EasyJsonBuf() {
-	buf := &buffer.Buffer{}
-	WorkWithEJBuf(buf)
+	buf := buffer.EJBuffer{}
+	WorkWithEJBuf(&buf)
 	buf.Reset()
 	Done()
 }
@@ -314,10 +314,10 @@ REPORT_FILE:
 			// ------------- HEAP
 
 			// ------------- STACK
-			// Alloc
+			// StackInuse
 			w.WriteString(strconv.FormatUint(m.StackInuse, 10))
 			w.WriteByte('\n')
-			// ------------- ALLOC
+			// ------------- STACK
 
 			w.Flush()
 			time.Sleep(time.Second)

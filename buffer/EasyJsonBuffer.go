@@ -33,6 +33,12 @@ func init() {
 	initBuffers()
 }
 
+// Init sets up a non-default pooling and allocation strategy. Should be run before serialization is done.
+func Init(cfg PoolConfig) {
+	config = cfg
+	initBuffers()
+}
+
 // putBuf puts a chunk to reuse pool if it can be reused.
 func putBuf(buf []byte) {
 	size := cap(buf)
@@ -60,7 +66,7 @@ func getBuf(size int) []byte {
 }
 
 // Buffer is a buffer optimized for serialization without extra copying.
-type Buffer struct {
+type EJBuffer struct {
 
 	// Buf is the current chunk that can be used for serialization.
 	Buf []byte
@@ -71,7 +77,7 @@ type Buffer struct {
 
 // EnsureSpace makes sure that the current chunk contains at least s free bytes,
 // possibly creating a new chunk.
-func (b *Buffer) EnsureSpace(s int) {
+func (b *EJBuffer) EnsureSpace(s int) {
 	if cap(b.Buf)-len(b.Buf) >= s {
 		return
 	}
@@ -98,7 +104,7 @@ func (b *Buffer) EnsureSpace(s int) {
 }
 
 // AppendBytes appends a byte slice to buffer.
-func (b *Buffer) Write(data []byte) {
+func (b *EJBuffer) Write(data []byte) {
 	for len(data) > 0 {
 		if cap(b.Buf) == len(b.Buf) { // EnsureSpace won't be inlined.
 			b.EnsureSpace(1)
@@ -115,7 +121,7 @@ func (b *Buffer) Write(data []byte) {
 }
 
 // AppendByte appends a single byte to buffer.
-func (b *Buffer) WriteByte(data byte) {
+func (b *EJBuffer) WriteByte(data byte) {
 	if cap(b.Buf) == len(b.Buf) { // EnsureSpace won't be inlined.
 		b.EnsureSpace(1)
 	}
@@ -123,7 +129,7 @@ func (b *Buffer) WriteByte(data byte) {
 }
 
 // AppendBytes appends a string to buffer.
-func (b *Buffer) WriteString(data string) {
+func (b *EJBuffer) WriteString(data string) {
 	for len(data) > 0 {
 		if cap(b.Buf) == len(b.Buf) { // EnsureSpace won't be inlined.
 			b.EnsureSpace(1)
@@ -140,7 +146,7 @@ func (b *Buffer) WriteString(data string) {
 }
 
 // Size computes the size of a buffer by adding sizes of every chunk.
-func (b *Buffer) Size() int {
+func (b *EJBuffer) Size() int {
 	size := len(b.Buf)
 	for _, buf := range b.bufs {
 		size += len(buf)
@@ -148,8 +154,12 @@ func (b *Buffer) Size() int {
 	return size
 }
 
-func (b *Buffer) Reset() {
+func (b *EJBuffer) Reset() {
+	for _, buf := range b.bufs {
+		putBuf(buf)
+	}
 	putBuf(b.toPool)
+
 	b.bufs = nil
 	b.Buf = nil
 	b.toPool = nil

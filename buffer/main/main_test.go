@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"github.com/omgnull/go-benchmark/buffer"
 )
 
 func BenchmarkGenericBuf(b *testing.B) {
@@ -53,6 +55,20 @@ func BenchmarkByteBufferPoolBuf(b *testing.B) {
 }
 
 func BenchmarkEasyJsonBuffer(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			EasyJsonBuf()
+		}
+	})
+}
+
+func BenchmarkEasyJsonBuffer_OptimizedConfig(b *testing.B) {
+	buffer.Init(buffer.PoolConfig{
+		StartSize:  2048,
+		PooledSize: 2048,
+		MaxSize:    32768,
+	})
+
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			EasyJsonBuf()
