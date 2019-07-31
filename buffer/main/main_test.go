@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/omgnull/go-benchmark/buffer"
+	"github.com/wencan/bytespool"
 )
 
 func BenchmarkGenericBuf(b *testing.B) {
@@ -72,6 +73,23 @@ func BenchmarkEasyJsonBuffer_OptimizedConfig(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			EasyJsonBuf()
+		}
+	})
+}
+
+func BenchmarkBytesPoolBuffer(b *testing.B) {
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			BytesPoolBuf()
+		}
+	})
+}
+
+func BenchmarkBytesPoolBuffer_OptimizedConfig(b *testing.B) {
+	bytespool.DefaultBufferMinGrowLength = 1024
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			BytesPoolBuf()
 		}
 	})
 }
