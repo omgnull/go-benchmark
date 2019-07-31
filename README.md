@@ -9,6 +9,7 @@
 * [bpool](https://github.com/oxtoacart/bpool)
 * [bytebufferpool](https://github.com/valyala/bytebufferpool)
 * [easyjson](https://github.com/mailru/easyjson/blob/master/buffer/pool.go)
+* [bytespool](https://github.com/wencan/bytespool)
 
 
 #### Launch bench
@@ -25,6 +26,6 @@ $ ./main
 
 Flags:
 * `duration` Test duration in seconds (default 60)
-* `method` Function to run; allowed: "generic" "stack" "alloc" "sync" "bpool" "bbpool" (default "generic")
+* `method` Function to run; allowed: "generic" "stack" "alloc" "sync" "bpool" "bbpool" "bytespool" (default "generic")
 * `out` Filename to write report; Prints into stdout by default
 * `queue` Number of goroutines; default is NumCPU (default 8)

@@ -18,6 +18,7 @@ import (
 
 	"github.com/oxtoacart/bpool"
 	"github.com/valyala/bytebufferpool"
+	"github.com/wencan/bytespool"
 
 	"github.com/omgnull/go-benchmark/buffer"
 )
@@ -61,13 +62,14 @@ var (
 
 	// Allowed methods
 	methods = map[string]Fn{
-		"generic":  GenericBuf,
-		"stack":    GenericStackBuf,
-		"alloc":    AllocBuf,
-		"sync":     SyncBuf,
-		"bpool":    BpoolBuf,
-		"bbpool":   BBpoolBuf,
-		"easyjson": EasyJsonBuf,
+		"generic":   GenericBuf,
+		"stack":     GenericStackBuf,
+		"alloc":     AllocBuf,
+		"sync":      SyncBuf,
+		"bpool":     BpoolBuf,
+		"bbpool":    BBpoolBuf,
+		"easyjson":  EasyJsonBuf,
+		"bytespool": BytesPoolBuf,
 	}
 
 	// Strings written to buf
@@ -169,10 +171,13 @@ func Methods() string {
 	return out
 }
 
+var syncPool sync.Pool
+
 func WorkWithBuf(b *bytes.Buffer) {
 	for _, s := range str {
 		b.WriteString(s)
 	}
+	// syncPool.Put(1)
 }
 
 func WorkWithByteBuf(b *bytebufferpool.ByteBuffer) {
@@ -182,6 +187,12 @@ func WorkWithByteBuf(b *bytebufferpool.ByteBuffer) {
 }
 
 func WorkWithEJBuf(b *buffer.EJBuffer) {
+	for _, s := range str {
+		b.WriteString(s)
+	}
+}
+
+func WorkWithBytesPoolBuf(b *bytespool.Buffer) {
 	for _, s := range str {
 		b.WriteString(s)
 	}
@@ -236,6 +247,13 @@ func EasyJsonBuf() {
 	buf := buffer.EJBuffer{}
 	WorkWithEJBuf(&buf)
 	buf.Reset()
+	Done()
+}
+
+func BytesPoolBuf() {
+	buf := bytespool.GetBuffer()
+	WorkWithBytesPoolBuf(buf)
+	bytespool.PutBuffer(buf)
 	Done()
 }
 
